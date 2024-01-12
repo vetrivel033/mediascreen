@@ -76,7 +76,7 @@ def generate_html_results(search_results, keywords):
             sentiment = perform_sentiment_analysis(summary)
     
             # Highlight keywords in summary
-            #highlighted_summary = highlight_keywords(summary, keywords)
+            highlighted_summary = highlight_keywords(summary, keywords)
     
             # Format summary into paragraphs, not exceeding 25 lines
             summary_paragraphs = [f"<b>Summary:</b>"]
