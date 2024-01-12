@@ -2,3 +2,4 @@ newspaper3k
 requests
 nltk
 reportlab
+gdown
