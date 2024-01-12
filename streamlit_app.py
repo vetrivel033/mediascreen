@@ -69,7 +69,7 @@ def generate_html_results(search_results, keywords):
             snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
             position = f"<b>Position:</b> {item.get('position', '')}"
 
-            article = Article(link)
+            article = Article(item.get('link', ''))
             article.download()
             article.parse()
             summary = article.text
