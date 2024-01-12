@@ -74,34 +74,39 @@ def create_pdf(pdf_filename, data, keywords):
         config.browser_user_agent = user_agent
 
         article = Article(link, config=config)
-        article.download()
-        article.parse()
-        summary = article.text
 
-        if is_advertisement(summary):
-            continue
+        try:
+            article.download()
+            article.parse()
+            summary = article.text
 
-        sentiment = perform_sentiment_analysis(summary)
+            if is_advertisement(summary):
+                continue
 
-        Story.append(Paragraph(f"<b>Title:</b> {title}", styles['Title']))
-        Story.append(Paragraph(f"<b>Source:</b> <a href='{link}' color='blue' underline='true'>{source}</a>", styles['BodyText']))
-        Story.append(Paragraph(f"<b>Date:</b> {date}", styles['BodyText']))
-        Story.append(Paragraph(f"<b>Snippet:</b> {snippet}", styles['BodyText']))
-        Story.append(Paragraph(f"<b>Position:</b> {position}", styles['BodyText']))
+            sentiment = perform_sentiment_analysis(summary)
 
-        summary_paragraphs = [f"<b>Summary:</b>"]
-        summary_lines = summary.split('\n')
+            Story.append(Paragraph(f"<b>Title:</b> {title}", styles['Title']))
+            Story.append(Paragraph(f"<b>Source:</b> <a href='{link}' color='blue' underline='true'>{source}</a>", styles['BodyText']))
+            Story.append(Paragraph(f"<b>Date:</b> {date}", styles['BodyText']))
+            Story.append(Paragraph(f"<b>Snippet:</b> {snippet}", styles['BodyText']))
+            Story.append(Paragraph(f"<b>Position:</b> {position}", styles['BodyText']))
 
-        for line in summary_lines[:25]:
-            for keyword in keywords:
-                line = line.replace(keyword, f"<font color='red'>{keyword}</font>")
-            summary_paragraphs.append(line)
+            summary_paragraphs = [f"<b>Summary:</b>"]
+            summary_lines = summary.split('\n')
 
-        Story.extend([Paragraph(paragraph, styles['BodyText']) for paragraph in summary_paragraphs])
+            for line in summary_lines[:25]:
+                for keyword in keywords:
+                    line = line.replace(keyword, f"<font color='red'>{keyword}</font>")
+                summary_paragraphs.append(line)
 
-        sentiment_color = colors.green if sentiment == "Positive" else colors.red
-        Story.append(Paragraph(f"<b>Sentiment:</b> {sentiment}", ParagraphStyle('Sentiment', textColor=sentiment_color)))
-        Story.append(PageBreak())
+            Story.extend([Paragraph(paragraph, styles['BodyText']) for paragraph in summary_paragraphs])
+
+            sentiment_color = colors.green if sentiment == "Positive" else colors.red
+            Story.append(Paragraph(f"<b>Sentiment:</b> {sentiment}", ParagraphStyle('Sentiment', textColor=sentiment_color)))
+            Story.append(PageBreak())
+
+        except Exception as e:
+            st.warning(f"Error processing article: {e}. Skipping to the next article.")
 
     doc.build(Story)
     st.success(f"Results written to {pdf_filename}")
