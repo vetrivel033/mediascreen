@@ -114,12 +114,14 @@ def main():
     keywords = [keyword.strip() for keyword in keywords.split(',')]
 
     if st.button("Analyze News"):
-        st.info("Analyzing news... Please wait.")
+        with st.status("Analyzing Keywords...", expanded=True) as status:
         try:
+            st.write("Fetching search results...")
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
+            st.write("Generating response...")
             html_results = generate_html_results(search_results, keywords)
             st.markdown(html_results, unsafe_allow_html=True)
-            st.info("Analysis Complete.")
+            status.update(label="Analysis complete!", state="complete", expanded=False)
         except Exception as e:
             st.error(f"Error: {e}")
 
