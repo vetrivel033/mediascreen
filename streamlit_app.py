@@ -55,7 +55,6 @@ def generate_html_results(search_results, keywords):
     
     for index, item in enumerate(search_results):
         title = f"<b>Title:</b> {item.get('title', '')}"
-        st.write(f"Title inside loop: {title}")
         source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
         date = f"<b>Date:</b> {item.get('date', '')}"
         snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
@@ -67,8 +66,9 @@ def generate_html_results(search_results, keywords):
 
         summary = article.text
 
-        #if is_advertisement(summary):
-         #   continue
+        # Skip items identified as advertisements
+        if is_advertisement(summary):
+            continue
 
         sentiment = perform_sentiment_analysis(summary)
 
