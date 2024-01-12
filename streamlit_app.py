@@ -1,19 +1,24 @@
+import os
 import streamlit as st
 from newspaper import Article
 from nltk.sentiment import SentimentIntensityAnalyzer
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 import requests
 import nltk
 import re
+import gdown
+
+nltk.download('vader_lexicon')
 
 # Use the provided SERP API key
 SERP_API_KEY = '450ab1c24b6bbe9302e96179ac6f299818b9d5f7e99beef44bc88fd02efc07ca'
 
-nltk.download('vader_lexicon')
+# Google Drive folder ID where the PDF will be uploaded
+GOOGLE_DRIVE_FOLDER_ID = '1mVcWrGnZgL8Lq2WNR-l7wJN-4y8LmdCB'
 
 def perform_sentiment_analysis(summary):
     sia = SentimentIntensityAnalyzer()
@@ -27,7 +32,7 @@ def perform_sentiment_analysis(summary):
         return "Neutral"
 
 def is_advertisement(text):
-    advertisement_patterns = ["AdChoices", "Advertisement", "Sponsored"]
+    advertisement_patterns = ["AdChoices", "Advertisement", "Sponsored", "AD"]
     for pattern in advertisement_patterns:
         if re.search(pattern, text, re.IGNORECASE):
             return True
@@ -97,6 +102,12 @@ def create_pdf(pdf_filename, data, keywords):
     doc.build(Story)
     st.success(f"Results written to {pdf_filename}")
 
+def upload_to_google_drive(pdf_filename):
+    st.info("Uploading PDF to Google Drive... Please wait.")
+    gdown.upload(pdf_filename, drive_data=GOOGLE_DRIVE_FOLDER_ID, file_id=None)
+    st.success("PDF uploaded to Google Drive.")
+    st.info(f"View the uploaded PDF on Google Drive: [Link](https://drive.google.com/drive/folders/{GOOGLE_DRIVE_FOLDER_ID})")
+
 def main():
     st.title("Google News Analysis with Streamlit")
 
@@ -109,6 +120,7 @@ def main():
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
             pdf_filename = "google_news_analysis.pdf"
             create_pdf(pdf_filename, search_results, keywords)
+            upload_to_google_drive(pdf_filename)
         except Exception as e:
             st.error(f"Error: {e}")
 
