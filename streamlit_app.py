@@ -28,11 +28,6 @@ def is_advertisement(text):
             return True
     return False
 
-def highlight_keywords(text, keywords):
-    for keyword in keywords:
-        text = re.sub(rf"\b{re.escape(keyword)}\b", f"<mark>{keyword}</mark>", text, flags=re.IGNORECASE)
-    return text
-
 def fetch_search_results(api_key, query, num=10):
     url = 'https://serpapi.com/search'
     results = []
@@ -70,19 +65,15 @@ def generate_html_results(search_results, keywords):
             #st.write(summary)
     
             sentiment = perform_sentiment_analysis(summary)
-    
-            # Highlight keywords in summary
-            #highlighted_summary = highlight_keywords(summary, keywords)
-    
+
             # Format summary into paragraphs, not exceeding 25 lines
-            summary_paragraphs = [f"<b>Summary:</b>"]
             summary_lines = summary.split('\n')
-    
+            summary_paragraphs = []
+
             for line in summary_lines[:25]:  # Limit to 25 lines
-                for keyword in keywords:
-                    line = line.replace(keyword, f"<font color='red'>{keyword}</font>")
                 summary_paragraphs.append(line)
-                formatted_summary = "<br>".join(summary_paragraphs)
+
+            formatted_summary = "<br>".join(summary_paragraphs)
             
             # Format sentiment with color
             sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
