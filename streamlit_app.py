@@ -79,12 +79,10 @@ def generate_html_results(search_results, keywords):
             summary_lines = summary.split('\n')
     
             for line in summary_lines[:25]:  # Limit to 25 lines
+                for keyword in keywords:
+                    line = line.replace(keyword, f"<font color='red'>{keyword}</font>")
                 summary_paragraphs.append(line)
                 formatted_summary = "<br>".join(summary_paragraphs)
-
-            # Skip items identified as advertisements
-            if is_advertisement(formatted_summary):
-                continue
             
             # Format sentiment with color
             sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
