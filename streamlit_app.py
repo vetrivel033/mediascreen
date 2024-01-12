@@ -93,7 +93,7 @@ def generate_html_results(search_results, keywords):
 
         # Combine all parts into HTML
         html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary}<br>{formatted_sentiment}<br><br>"
-        st.write(f"inside loop: {html_results}")
+        #st.write(f"inside loop: {html_results}")
 
     st.text(f"Total Results: {len(search_results)}")
     st.write(f"before returning: {html_results}")
