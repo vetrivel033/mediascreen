@@ -62,16 +62,16 @@ def fetch_search_results(api_key, query, num=10):
 def generate_html_results(search_results, keywords):
     html_results = ""
     for index, item in enumerate(search_results):
+        title = f"<b>Title:</b> {item.get('title', '')}"
+        source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
+        date = f"<b>Date:</b> {item.get('date', '')}"
+        snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
+        position = f"<b>Position:</b> {item.get('position', '')}"
+
+        config = Config()
+        article = Article(item.get('link', ''), config=config)
+
         try:
-            title = f"<b>Title:</b> {item.get('title', '')}"
-            source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
-            date = f"<b>Date:</b> {item.get('date', '')}"
-            snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
-            position = f"<b>Position:</b> {item.get('position', '')}"
-
-            config = Config()
-            article = Article(item.get('link', ''), config=config)
-
             article.download()
             article.parse()
 
@@ -104,7 +104,7 @@ def generate_html_results(search_results, keywords):
             # Combine all parts into HTML
             html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
         except Exception as e:
-            st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Skipping to the next article.")
+            st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Continuing with the next article.")
 
     st.text(f"Total Results: {len(search_results)}")
     return html_results
