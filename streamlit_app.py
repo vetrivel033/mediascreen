@@ -61,7 +61,7 @@ def fetch_search_results(api_key, query, num=10):
 
 def generate_html_results(search_results, keywords):
     html_results = ""
-    for item in search_results:
+    for index, item in enumerate(search_results):
         try:
             title = f"<b>Title:</b> {item.get('title', '')}"
             source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
@@ -74,6 +74,11 @@ def generate_html_results(search_results, keywords):
 
             article.download()
             article.parse()
+
+            if not article.text:
+                st.warning(f"Empty summary for article {index + 1} titled '{item.get('title', '')}'. Skipping to the next article.")
+                continue
+
             summary = article.text
 
             if is_advertisement(summary):
@@ -103,7 +108,7 @@ def generate_html_results(search_results, keywords):
             # Combine all parts into HTML
             html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
         except Exception as e:
-            st.warning(f"Error processing article: {e}. Skipping to the next article.")
+            st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Skipping to the next article.")
 
     st.text(f"Total Results: {len(search_results)}")
     return html_results
