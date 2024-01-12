@@ -73,26 +73,26 @@ def generate_html_results(search_results, keywords):
         sentiment = perform_sentiment_analysis(summary)
 
         # Highlight keywords in summary
-        highlighted_summary = highlight_keywords(summary, keywords)
+        #highlighted_summary = highlight_keywords(summary, keywords)
 
         # Format summary into paragraphs, not exceeding 25 lines
-        summary_paragraphs = [f"<b>Summary:</b>"]
-        summary_lines = highlighted_summary.split('\n')
+        #summary_paragraphs = [f"<b>Summary:</b>"]
+        #summary_lines = highlighted_summary.split('\n')
 
-        for i, line in enumerate(summary_lines):
-            if i < 25:
-                summary_paragraphs.append(line)
-            else:
-                break
+        #for i, line in enumerate(summary_lines):
+          #  if i < 25:
+           #     summary_paragraphs.append(line)
+            #else:
+             #   break
 
-        formatted_summary = "<br>".join(summary_paragraphs)
+        #formatted_summary = "<br>".join(summary_paragraphs)
 
         # Format sentiment with color
         sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
         formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
 
         # Combine all parts into HTML
-        html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
+        html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary}<br>{formatted_sentiment}<br><br>"
         #st.write(f"inside loop: {html_results}")
 
     st.text(f"Total Results: {len(search_results)}")
