@@ -48,14 +48,14 @@ def fetch_search_results(api_key, query, num=10):
             response = requests.get(url, params=params)
             response.raise_for_status()  # Raise an exception for 4xx or 5xx responses
             results += response.json().get('organic_results', [])
-        except requests.exceptions.HTTPError as errh:
-            st.error(f"HTTP Error: {errh}")
-        except requests.exceptions.ConnectionError as errc:
-            st.error(f"Error Connecting: {errc}")
-        except requests.exceptions.Timeout as errt:
-            st.error(f"Timeout Error: {errt}")
-        except requests.exceptions.RequestException as err:
-            st.error(f"Error: {err}")
+            except requests.exceptions.HTTPError as errh:
+                st.error(f"HTTP Error: {errh}")
+            except requests.exceptions.ConnectionError as errc:
+                st.error(f"Error Connecting: {errc}")
+            except requests.exceptions.Timeout as errt:
+                st.error(f"Timeout Error: {errt}")
+            except requests.exceptions.RequestException as err:
+                st.error(f"Error: {err}")
 
     return results
 
