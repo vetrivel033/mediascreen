@@ -18,7 +18,7 @@ nltk.download('vader_lexicon')
 SERP_API_KEY = '450ab1c24b6bbe9302e96179ac6f299818b9d5f7e99beef44bc88fd02efc07ca'
 
 # Google Drive folder ID where the PDF will be uploaded
-GOOGLE_DRIVE_FOLDER_ID = '1mVcWrGnZgL8Lq2WNR-l7wJN-4y8LmdCB'
+GOOGLE_DRIVE_FOLDER_ID = 'your_google_drive_folder_id'
 
 def perform_sentiment_analysis(summary):
     sia = SentimentIntensityAnalyzer()
@@ -106,7 +106,6 @@ def upload_to_google_drive(pdf_filename):
     st.info("Uploading PDF to Google Drive... Please wait.")
     gdown.upload(pdf_filename, drive_data=GOOGLE_DRIVE_FOLDER_ID, file_id=None)
     st.success("PDF uploaded to Google Drive.")
-    st.info(f"View the uploaded PDF on Google Drive: [Link](https://drive.google.com/drive/folders/{GOOGLE_DRIVE_FOLDER_ID})")
 
 def main():
     st.title("Google News Analysis with Streamlit")
