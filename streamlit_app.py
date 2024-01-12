@@ -121,4 +121,8 @@ def main():
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
             html_results = generate_html_results(search_results, keywords)
             st.markdown(html_results, unsafe_allow_html=True)
-        except Exception as e
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()
