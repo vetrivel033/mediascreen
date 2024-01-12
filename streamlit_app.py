@@ -1,5 +1,7 @@
 import os
 import streamlit as st
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 from newspaper import Article, Config
 from nltk.sentiment import SentimentIntensityAnalyzer
 from reportlab.lib.pagesizes import letter
@@ -10,7 +12,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import requests
 import nltk
 import re
-import gdown
 
 nltk.download('vader_lexicon')
 
@@ -113,9 +114,18 @@ def create_pdf(pdf_filename, data, keywords):
 
 def upload_to_google_drive(pdf_filename):
     st.info("Uploading PDF to Google Drive... Please wait.")
-    gdown.upload(pdf_filename, drive_data=GOOGLE_DRIVE_FOLDER_ID, file_id=None)
+
+    # Authenticate with Google Drive
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()
+    drive = GoogleDrive(gauth)
+
+    # Upload the PDF to Google Drive
+    drive_file = drive.CreateFile({'title': pdf_filename})
+    drive_file.Upload()
+
     st.success("PDF uploaded to Google Drive.")
-    st.info(f"View the uploaded PDF on Google Drive: [Link](https://drive.google.com/drive/folders/{GOOGLE_DRIVE_FOLDER_ID})")
+    st.info(f"View the uploaded PDF on Google Drive: [Link](https://drive.google.com/file/d/{drive_file['id']}/edit)")
 
 def main():
     st.title("Google News Analysis with Streamlit")
