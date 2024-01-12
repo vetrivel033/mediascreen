@@ -73,11 +73,15 @@ def generate_html_results(search_results, keywords):
             current_word_count = 0
     
             for word in summary_words:
+                # Remove non-printable characters
+                word = ''.join(char for char in word if unicodedata.category(char)[0] != 'C')
+    
                 if current_word_count + len(word) <= words_limit:
                     summary_paragraphs.append(word)
                     current_word_count += len(word) + 1  # Add 1 for the space after the word
                 else:
                     break
+
             formatted_summary = " ".join(summary_paragraphs)
             
             # Format sentiment with color
