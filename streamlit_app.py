@@ -35,20 +35,22 @@ def highlight_keywords(text, keywords):
 
 def fetch_search_results(api_key, query, num=10):
     url = 'https://serpapi.com/search'
-    params = {
-        'q': query,
-        'num': num,
-        'api_key': api_key,
-    }
+    results = []
 
-    try:
-        response = requests.get(url, params=params)
-        results = response.json().get('organic_results', [])
-        return results
+    for start in range(0, num, 10):
+        params = {
+            'q': query,
+            'start': start,
+            'api_key': api_key,
+        }
 
-    except Exception as e:
-        st.error(f"Error accessing SERP API: {e}")
-        return []
+        try:
+            response = requests.get(url, params=params)
+            results += response.json().get('organic_results', [])
+        except Exception as e:
+            st.error(f"Error accessing SERP API: {e}")
+
+    return results
 
 def generate_html_results(search_results, keywords):
     html_results = ""
