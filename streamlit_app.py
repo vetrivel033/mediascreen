@@ -4,6 +4,7 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 import requests
 import nltk
 import re
+import unicodedata
 
 nltk.download('vader_lexicon')
 
