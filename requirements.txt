@@ -4,3 +4,4 @@ nltk
 reportlab
 gdown
 pydrive
+bs4
