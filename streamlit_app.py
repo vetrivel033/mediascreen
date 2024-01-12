@@ -109,7 +109,7 @@ def main():
     st.title("Media Screening App")
 
     # Default keywords
-    default_keywords = ["Lido Hack", "Lido Regulatory actions", "Lido SEC"]
+    default_keywords = ["Lido Hack", "Lido Regulatory actions", "Lido SEC", "Lido Hacks", "Lido Token market manipulation", "Lido Scams", "Lido Security Allegations", "$LDO token delisting"]
     keywords = st.text_area("Enter keywords (separated by commas)", ", ".join(default_keywords))
     keywords = [keyword.strip() for keyword in keywords.split(',')]
 
