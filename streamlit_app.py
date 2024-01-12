@@ -69,14 +69,11 @@ def generate_html_results(search_results, keywords):
             snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
             position = f"<b>Position:</b> {item.get('position', '')}"
 
-            article = Article(item.get('link', ''))
+            config = Config()
+            article = Article(item.get('link', ''), config=config)
+
             article.download()
             article.parse()
-            summary = article.text
-
-            if not article.text:
-                st.warning(f"Empty summary for article {index + 1} titled '{item.get('title', '')}'. Skipping to the next article.")
-                continue
 
             summary = article.text
 
@@ -111,7 +108,7 @@ def generate_html_results(search_results, keywords):
 
     st.text(f"Total Results: {len(search_results)}")
     return html_results
-
+    
 def main():
     st.title("Media Screening App")
 
