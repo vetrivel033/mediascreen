@@ -76,8 +76,8 @@ def generate_html_results(search_results, keywords):
             article.parse()
             summary = article.text
 
-            #if is_advertisement(summary):
-                #continue
+            if is_advertisement(summary):
+                continue
 
             sentiment = perform_sentiment_analysis(summary)
 
@@ -88,8 +88,11 @@ def generate_html_results(search_results, keywords):
             summary_paragraphs = [f"<b>Summary:</b>"]
             summary_lines = highlighted_summary.split('\n')
 
-            for line in summary_lines[:25]:
-                summary_paragraphs.append(line)
+            for i, line in enumerate(summary_lines):
+                if i < 25:
+                    summary_paragraphs.append(line)
+                else:
+                    break
 
             formatted_summary = "<br>".join(summary_paragraphs)
 
@@ -99,7 +102,6 @@ def generate_html_results(search_results, keywords):
 
             # Combine all parts into HTML
             html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
-            st.write(html_results)
         except Exception as e:
             st.warning(f"Error processing article: {e}. Skipping to the next article.")
 
@@ -119,8 +121,4 @@ def main():
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
             html_results = generate_html_results(search_results, keywords)
             st.markdown(html_results, unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-if __name__ == "__main__":
-    main()
+        except Exception as e
