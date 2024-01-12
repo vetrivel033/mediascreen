@@ -70,7 +70,7 @@ def generate_html_results(search_results, keywords):
         #if is_advertisement(summary):
          #   continue
 
-        #sentiment = perform_sentiment_analysis(summary)
+        sentiment = perform_sentiment_analysis(summary)
 
         # Highlight keywords in summary
         #highlighted_summary = highlight_keywords(summary, keywords)
@@ -88,8 +88,8 @@ def generate_html_results(search_results, keywords):
         #formatted_summary = "<br>".join(summary_paragraphs)
 
         # Format sentiment with color
-        #sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
-        #formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
+        sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
+        formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
 
         # Combine all parts into HTML
         html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary}<br>{formatted_sentiment}<br><br>"
