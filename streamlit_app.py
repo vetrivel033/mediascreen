@@ -5,6 +5,7 @@ import requests
 import nltk
 import re
 import unicodedata
+from bs4 import BeautifulSoup
 
 nltk.download('vader_lexicon')
 
@@ -64,12 +65,16 @@ def generate_html_results(search_results, keywords):
     
             summary = article.text
             #st.write(summary)
+
+            # Remove hyperlinks from the summary using BeautifulSoup
+            soup = BeautifulSoup(highlighted_summary, 'html.parser')
+            cleaned_summary = ' '.join(soup.stripped_strings)
     
-            sentiment = perform_sentiment_analysis(summary)
+            sentiment = perform_sentiment_analysis(cleaned_summary)
 
             # Format summary into paragraphs, not exceeding 250 words
             words_limit = 500
-            summary_words = summary.split()
+            summary_words = cleaned_summary.split()
             summary_paragraphs = [f"<b>Summary:</b>"]
             current_word_count = 0
     
