@@ -69,14 +69,10 @@ def generate_html_results(search_results, keywords):
             summary = article.text
             #st.write(summary)
     
-            # Skip items identified as advertisements
-            #if is_advertisement(summary):
-                #continue
-    
             sentiment = perform_sentiment_analysis(summary)
     
             # Highlight keywords in summary
-            highlighted_summary = highlight_keywords(summary, keywords)
+            #highlighted_summary = highlight_keywords(summary, keywords)
     
             # Format summary into paragraphs, not exceeding 25 lines
             summary_paragraphs = [f"<b>Summary:</b>"]
@@ -85,7 +81,11 @@ def generate_html_results(search_results, keywords):
             for line in summary_lines[:25]:  # Limit to 25 lines
                 summary_paragraphs.append(line)
                 formatted_summary = "<br>".join(summary_paragraphs)
-    
+
+            # Skip items identified as advertisements
+            if is_advertisement(formatted_summary):
+                continue
+            
             # Format sentiment with color
             sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
             formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
