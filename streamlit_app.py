@@ -110,7 +110,7 @@ def main():
         st.info("Analyzing news... Please wait.")
         try:
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
-            print (search_results)
+            st.write(search_results)
             html_results = generate_html_results(search_results, keywords)
             st.markdown(html_results, unsafe_allow_html=True)
         except Exception as e:
