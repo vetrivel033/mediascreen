@@ -92,7 +92,7 @@ def generate_html_results(search_results, keywords):
             formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
     
             # Combine all parts into HTML
-            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
+            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary_paragraphs}<br>{formatted_sentiment}<br><br>"
             #st.write(f"inside loop: {html_results}")
         except Exception as e:
             st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Continuing with the next article.")
