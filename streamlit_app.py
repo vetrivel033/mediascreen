@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from newspaper import Article
+from newspaper import Article, Config
 from nltk.sentiment import SentimentIntensityAnalyzer
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
@@ -18,7 +18,7 @@ nltk.download('vader_lexicon')
 SERP_API_KEY = '450ab1c24b6bbe9302e96179ac6f299818b9d5f7e99beef44bc88fd02efc07ca'
 
 # Google Drive folder ID where the PDF will be uploaded
-GOOGLE_DRIVE_FOLDER_ID = 'your_google_drive_folder_id'
+GOOGLE_DRIVE_FOLDER_ID = '1mVcWrGnZgL8Lq2WNR-l7wJN-4y8LmdCB'
 
 def perform_sentiment_analysis(summary):
     sia = SentimentIntensityAnalyzer()
@@ -69,7 +69,11 @@ def create_pdf(pdf_filename, data, keywords):
         snippet = item.get('snippet', '')
         position = item.get('position', '')
 
-        article = Article(link)
+        config = Config()
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+        config.browser_user_agent = user_agent
+
+        article = Article(link, config=config)
         article.download()
         article.parse()
         summary = article.text
@@ -106,6 +110,7 @@ def upload_to_google_drive(pdf_filename):
     st.info("Uploading PDF to Google Drive... Please wait.")
     gdown.upload(pdf_filename, drive_data=GOOGLE_DRIVE_FOLDER_ID, file_id=None)
     st.success("PDF uploaded to Google Drive.")
+    st.info(f"View the uploaded PDF on Google Drive: [Link](https://drive.google.com/drive/folders/{GOOGLE_DRIVE_FOLDER_ID})")
 
 def main():
     st.title("Google News Analysis with Streamlit")
