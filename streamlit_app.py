@@ -115,7 +115,9 @@ def upload_to_google_drive(pdf_filename):
 def main():
     st.title("Google News Analysis with Streamlit")
 
-    keywords = st.text_area("Enter keywords (separated by commas)", "Python, Programming, OpenAI")
+    # Default keywords
+    default_keywords = ["Polygon", "SEC", "Compliance"]
+    keywords = st.text_area("Enter keywords (separated by commas)", ", ".join(default_keywords))
     keywords = [keyword.strip() for keyword in keywords.split(',')]
 
     if st.button("Analyze News"):
