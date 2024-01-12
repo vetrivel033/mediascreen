@@ -76,7 +76,7 @@ def generate_html_results(search_results, keywords):
     
             # Format summary into paragraphs, not exceeding 25 lines
             summary_paragraphs = [f"<b>Summary:</b>"]
-            summary_lines = highlighted_summary.split('\n')
+            summary_lines = summary.split('\n')
     
             for line in summary_lines[:25]:  # Limit to 25 lines
                 summary_paragraphs.append(line)
