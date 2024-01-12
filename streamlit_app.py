@@ -48,14 +48,17 @@ def fetch_search_results(api_key, query, num=10):
             response = requests.get(url, params=params)
             response.raise_for_status()  # Raise an exception for 4xx or 5xx responses
             results += response.json().get('organic_results', [])
-            except requests.exceptions.HTTPError as errh:
-                st.error(f"HTTP Error: {errh}")
-            except requests.exceptions.ConnectionError as errc:
-                st.error(f"Error Connecting: {errc}")
-            except requests.exceptions.Timeout as errt:
-                st.error(f"Timeout Error: {errt}")
-            except requests.exceptions.RequestException as err:
-                st.error(f"Error: {err}")
+        except requests.exceptions.HTTPError as errh:
+            if errh.response.status_code == 403:
+                st.warning(f"403 Client Error for article {index + 1} titled '{item.get('title', '')}': Access Denied. Skipping to the next article.")
+            else:
+                st.warning(f"HTTP Error: {errh}")
+        except requests.exceptions.ConnectionError as errc:
+            st.error(f"Error Connecting: {errc}")
+        except requests.exceptions.Timeout as errt:
+            st.error(f"Timeout Error: {errt}")
+        except requests.exceptions.RequestException as err:
+            st.error(f"Error: {err}")
 
     return results
 
