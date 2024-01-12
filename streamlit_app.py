@@ -61,6 +61,7 @@ def fetch_search_results(api_key, query, num=10):
 
 def generate_html_results(search_results, keywords):
     html_results = ""
+    
     for index, item in enumerate(search_results):
         title = f"<b>Title:</b> {item.get('title', '')}"
         source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
