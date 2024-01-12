@@ -67,6 +67,7 @@ def generate_html_results(search_results, keywords):
             article.parse()
     
             summary = article.text
+            st.write(summary)
     
             # Skip items identified as advertisements
             #if is_advertisement(summary):
