@@ -67,8 +67,8 @@ def generate_html_results(search_results, keywords):
         summary = article.text
 
         # Skip items identified as advertisements
-       # if is_advertisement(summary):
-            #continue
+        if is_advertisement(summary):
+            continue
 
         sentiment = perform_sentiment_analysis(summary)
 
@@ -80,10 +80,10 @@ def generate_html_results(search_results, keywords):
         #summary_lines = highlighted_summary.split('\n')
 
         #for i, line in enumerate(summary_lines):
-          #  if i < 25:
-           #     summary_paragraphs.append(line)
-            #else:
-             #   break
+         #   if i < 25:
+          #      summary_paragraphs.append(line)
+           # else:
+            #    break
 
         #formatted_summary = "<br>".join(summary_paragraphs)
 
@@ -93,7 +93,7 @@ def generate_html_results(search_results, keywords):
 
         # Combine all parts into HTML
         html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary}<br>{formatted_sentiment}<br><br>"
-        #st.write(f"inside loop: {html_results}")
+        st.write(f"inside loop: {html_results}")
 
     st.text(f"Total Results: {len(search_results)}")
     st.write(f"before returning: {html_results}")
@@ -103,7 +103,7 @@ def main():
     st.title("Media Screening App")
 
     # Default keywords
-    default_keywords = ["Lido Hack", "Lido Regulatory actions", "Lido SEC"]
+    default_keywords = ["Polygon", "SEC", "Compliance"]
     keywords = st.text_area("Enter keywords (separated by commas)", ", ".join(default_keywords))
     keywords = [keyword.strip() for keyword in keywords.split(',')]
 
