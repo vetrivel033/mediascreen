@@ -66,14 +66,20 @@ def generate_html_results(search_results, keywords):
     
             sentiment = perform_sentiment_analysis(summary)
 
-            # Format summary into paragraphs, not exceeding 25 lines
-            summary_lines = summary.split('\n')
+            # Format summary into paragraphs, not exceeding 250 words
+            words_limit = 250
+            summary_words = summary.split()
             summary_paragraphs = []
-
-            for line in summary_lines[:25]:  # Limit to 25 lines
-                summary_paragraphs.append(line)
-
-            formatted_summary = "<br>".join(summary_paragraphs)
+            current_word_count = 0
+    
+            for word in summary_words:
+                if current_word_count + len(word) <= words_limit:
+                    summary_paragraphs.append(word)
+                    current_word_count += len(word) + 1  # Add 1 for the space after the word
+                else:
+                    break
+    
+            formatted_summary = " ".join(summary_paragraphs)
             
             # Format sentiment with color
             sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
