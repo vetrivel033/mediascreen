@@ -44,22 +44,9 @@ def fetch_search_results(api_key, query, num=10):
             'api_key': api_key,
         }
 
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()  # Raise an exception for 4xx or 5xx responses
-            results += response.json().get('organic_results', [])
-        except requests.exceptions.HTTPError as errh:
-            if errh.response.status_code == 403:
-                st.warning(f"403 Client Error. Access Denied. Skipping to the next set of search results.")
-                continue
-            else:
-                st.warning(f"HTTP Error: {errh}")
-        except requests.exceptions.ConnectionError as errc:
-            st.error(f"Error Connecting: {errc}")
-        except requests.exceptions.Timeout as errt:
-            st.error(f"Timeout Error: {errt}")
-        except requests.exceptions.RequestException as err:
-            st.error(f"Error: {err}")
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx responses
+        results += response.json().get('organic_results', [])
 
     return results
 
@@ -75,60 +62,46 @@ def generate_html_results(search_results, keywords):
 
         config = Config()
         article = Article(item.get('link', ''), config=config)
+        article.download()
+        article.parse()
 
-        try:
-            article.download()
-            article.parse()
+        summary = article.text
 
-            summary = article.text
+        if is_advertisement(summary):
+            continue
 
-            if is_advertisement(summary):
-                continue
+        sentiment = perform_sentiment_analysis(summary)
 
-            sentiment = perform_sentiment_analysis(summary)
+        # Highlight keywords in summary
+        highlighted_summary = highlight_keywords(summary, keywords)
 
-            # Highlight keywords in summary
-            highlighted_summary = highlight_keywords(summary, keywords)
+        # Format summary into paragraphs, not exceeding 25 lines
+        summary_paragraphs = [f"<b>Summary:</b>"]
+        summary_lines = highlighted_summary.split('\n')
 
-            # Format summary into paragraphs, not exceeding 25 lines
-            summary_paragraphs = [f"<b>Summary:</b>"]
-            summary_lines = highlighted_summary.split('\n')
-
-            for i, line in enumerate(summary_lines):
-                if i < 25:
-                    summary_paragraphs.append(line)
-                else:
-                    break
-
-            formatted_summary = "<br>".join(summary_paragraphs)
-
-            # Format sentiment with color
-            sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
-            formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
-
-            # Combine all parts into HTML
-            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
-        except requests.exceptions.HTTPError as errh:
-            if errh.response.status_code == 403:
-                st.warning(f"403 Client Error for article {index + 1} titled '{item.get('title', '')}': Access Denied. Skipping to the next article.")
+        for i, line in enumerate(summary_lines):
+            if i < 25:
+                summary_paragraphs.append(line)
             else:
-                st.warning(f"HTTP Error: {errh}")
-        except requests.exceptions.ConnectionError as errc:
-            st.error(f"Error Connecting: {errc}")
-        except requests.exceptions.Timeout as errt:
-            st.error(f"Timeout Error: {errt}")
-        except requests.exceptions.RequestException as err:
-            st.error(f"Error: {err}")
+                break
+
+        formatted_summary = "<br>".join(summary_paragraphs)
+
+        # Format sentiment with color
+        sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
+        formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
+
+        # Combine all parts into HTML
+        html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
 
     st.text(f"Total Results: {len(search_results)}")
-    st.text(f"HTML Results: {len(html_results)}")
     return html_results
 
 def main():
     st.title("Media Screening App")
 
     # Default keywords
-    default_keywords = ["Lido Hack", "Lido Rgulatory actions", "Lido SEC"]
+    default_keywords = ["Polygon", "SEC", "Compliance"]
     keywords = st.text_area("Enter keywords (separated by commas)", ", ".join(default_keywords))
     keywords = [keyword.strip() for keyword in keywords.split(',')]
 
