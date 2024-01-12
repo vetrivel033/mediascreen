@@ -84,15 +84,14 @@ def generate_html_results(search_results, keywords):
     
             for line in summary_lines[:25]:  # Limit to 25 lines
                 summary_paragraphs.append(line)
-    
-            formatted_summary = "<br>".join(summary_paragraphs)
+                formatted_summary = "<br>".join(summary_paragraphs)
     
             # Format sentiment with color
             sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
             formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
     
             # Combine all parts into HTML
-            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{summary_paragraphs}<br>{formatted_sentiment}<br><br>"
+            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
             #st.write(f"inside loop: {html_results}")
         except Exception as e:
             st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Continuing with the next article.")
