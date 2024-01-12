@@ -50,6 +50,52 @@ def fetch_search_results(api_key, query, num=10):
         st.error(f"Error accessing SERP API: {e}")
         return []
 
+def generate_html_results(search_results, keywords):
+    html_results = ""
+    for item in search_results:
+        title = f"<b>Title:</b> {item.get('title', '')}"
+        source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
+        date = f"<b>Date:</b> {item.get('date', '')}"
+        snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
+        position = f"<b>Position:</b> {item.get('position', '')}"
+
+        config = Config()
+        article = Article(item.get('link', ''), config=config)
+
+        try:
+            article.download()
+            article.parse()
+            summary = article.text
+
+            if is_advertisement(summary):
+                continue
+
+            sentiment = perform_sentiment_analysis(summary)
+
+            # Highlight keywords in summary
+            highlighted_summary = highlight_keywords(summary, keywords)
+
+            # Format summary into paragraphs, not exceeding 25 lines
+            summary_paragraphs = [f"<b>Summary:</b>"]
+            summary_lines = highlighted_summary.split('\n')
+
+            for line in summary_lines[:25]:
+                summary_paragraphs.append(line)
+
+            formatted_summary = "<br>".join(summary_paragraphs)
+
+            # Format sentiment with color
+            sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
+            formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
+
+            # Combine all parts into HTML
+            html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
+
+        except Exception as e:
+            st.warning(f"Error processing article: {e}. Skipping to the next article.")
+
+    return html_results
+
 def main():
     st.title("Google News Analysis with Streamlit")
 
@@ -62,47 +108,8 @@ def main():
         st.info("Analyzing news... Please wait.")
         try:
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
-
-            # Create a table to display the results
-            table_data = []
-
-            for item in search_results:
-                title = item.get('title', '')
-                source = f"[{item.get('source', '')}]({item.get('link', '')})"
-                date = item.get('date', '')
-                snippet = item.get('snippet', '')
-                position = item.get('position', '')
-
-                config = Config()
-                article = Article(item.get('link', ''), config=config)
-
-                try:
-                    article.download()
-                    article.parse()
-                    summary = article.text
-
-                    if is_advertisement(summary):
-                        continue
-
-                    sentiment = perform_sentiment_analysis(summary)
-
-                    highlighted_summary = highlight_keywords(summary, keywords)
-
-                    table_data.append({
-                        'Title': title,
-                        'Source': source,
-                        'Date': date,
-                        'Snippet': snippet,
-                        'Position': position,
-                        'Summary': highlighted_summary,
-                        'Sentiment': sentiment
-                    })
-
-                except Exception as e:
-                    st.warning(f"Error processing article: {e}. Skipping to the next article.")
-
-            st.table(table_data)
-
+            html_results = generate_html_results(search_results, keywords)
+            st.markdown(html_results, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Error: {e}")
 
