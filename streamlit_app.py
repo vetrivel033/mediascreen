@@ -1,3 +1,5 @@
+pip install streamlit newspaper3k requests
+
 import streamlit as st
 from newspaper import Article
 from nltk.sentiment import SentimentIntensityAnalyzer
