@@ -121,7 +121,7 @@ def main():
                 st.write("Generating response...")
                 html_results = generate_html_results(search_results, keywords)
                 st.markdown(html_results, unsafe_allow_html=True)
-                status.update(label="Analysis complete!", state="complete", expanded=False)
+                status.update(label="Analysis complete!", state="complete", expanded=True)
             except Exception as e:
                 st.error(f"Error: {e}")
 
