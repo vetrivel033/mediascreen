@@ -105,6 +105,7 @@ def generate_html_results(search_results, keywords):
         except Exception as e:
             st.warning(f"Error processing article: {e}. Skipping to the next article.")
 
+    st.text(f"Total Results: {len(search_results)}")
     return html_results
 
 def main():
