@@ -55,41 +55,41 @@ def generate_html_results(search_results, keywords):
     
     for index, item in enumerate(search_results):
         title = f"<b>Title:</b> {item.get('title', '')}"
+        st.write(f"Title inside loop: {title}")
         source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
         date = f"<b>Date:</b> {item.get('date', '')}"
         snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
         position = f"<b>Position:</b> {item.get('position', '')}"
 
-        config = Config()
-        article = Article(item.get('link', ''), config=config)
+        article = Article(item.get('link', ''))
         article.download()
         article.parse()
 
         summary = article.text
 
-        if is_advertisement(summary):
-            continue
+        #if is_advertisement(summary):
+         #   continue
 
-        sentiment = perform_sentiment_analysis(summary)
+        #sentiment = perform_sentiment_analysis(summary)
 
         # Highlight keywords in summary
-        highlighted_summary = highlight_keywords(summary, keywords)
+        #highlighted_summary = highlight_keywords(summary, keywords)
 
         # Format summary into paragraphs, not exceeding 25 lines
-        summary_paragraphs = [f"<b>Summary:</b>"]
-        summary_lines = highlighted_summary.split('\n')
+        #summary_paragraphs = [f"<b>Summary:</b>"]
+        #summary_lines = highlighted_summary.split('\n')
 
-        for i, line in enumerate(summary_lines):
-            if i < 25:
-                summary_paragraphs.append(line)
-            else:
-                break
+        #for i, line in enumerate(summary_lines):
+         #   if i < 25:
+          #      summary_paragraphs.append(line)
+           # else:
+            #    break
 
-        formatted_summary = "<br>".join(summary_paragraphs)
+        #formatted_summary = "<br>".join(summary_paragraphs)
 
         # Format sentiment with color
-        sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
-        formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
+        #sentiment_color = 'green' if sentiment == 'Positive' else ('red' if sentiment == 'Negative' else 'black')
+        #formatted_sentiment = f"<b>Sentiment:</b> <font color='{sentiment_color}'>{sentiment}</font>"
 
         # Combine all parts into HTML
         html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
