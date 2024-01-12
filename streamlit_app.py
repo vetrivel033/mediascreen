@@ -67,8 +67,8 @@ def generate_html_results(search_results, keywords):
         summary = article.text
 
         # Skip items identified as advertisements
-        if is_advertisement(summary):
-            continue
+        #if is_advertisement(summary):
+         #   continue
 
         sentiment = perform_sentiment_analysis(summary)
 
