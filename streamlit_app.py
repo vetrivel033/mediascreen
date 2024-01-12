@@ -50,7 +50,8 @@ def fetch_search_results(api_key, query, num=10):
             results += response.json().get('organic_results', [])
         except requests.exceptions.HTTPError as errh:
             if errh.response.status_code == 403:
-                st.warning(f"403 Client Error for article {index + 1} titled '{item.get('title', '')}': Access Denied. Skipping to the next article.")
+                st.warning(f"403 Client Error. Access Denied. Skipping to the next set of search results.")
+                continue
             else:
                 st.warning(f"HTTP Error: {errh}")
         except requests.exceptions.ConnectionError as errc:
@@ -107,21 +108,12 @@ def generate_html_results(search_results, keywords):
 
             # Combine all parts into HTML
             html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
-        except requests.exceptions.HTTPError as errh:
-            if errh.response.status_code == 403:
-                st.warning(f"403 Client Error for article {index + 1} titled '{item.get('title', '')}': Access Denied. Skipping to the next article.")
-            else:
-                st.warning(f"HTTP Error: {errh}")
-        except requests.exceptions.ConnectionError as errc:
-            st.error(f"Error Connecting: {errc}")
-        except requests.exceptions.Timeout as errt:
-            st.error(f"Timeout Error: {errt}")
-        except requests.exceptions.RequestException as err:
-            st.error(f"Error: {err}")
+        except Exception as e:
+            st.warning(f"Error processing article {index + 1} titled '{item.get('title', '')}': {e}. Continuing with the next article.")
 
     st.text(f"Total Results: {len(search_results)}")
     return html_results
-    
+
 def main():
     st.title("Media Screening App")
 
