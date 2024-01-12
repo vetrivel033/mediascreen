@@ -67,7 +67,7 @@ def generate_html_results(search_results, keywords):
             #st.write(summary)
 
             # Remove hyperlinks from the summary using BeautifulSoup
-            soup = BeautifulSoup(highlighted_summary, 'html.parser')
+            soup = BeautifulSoup(summary, 'html.parser')
             cleaned_summary = ' '.join(soup.stripped_strings)
     
             sentiment = perform_sentiment_analysis(cleaned_summary)
