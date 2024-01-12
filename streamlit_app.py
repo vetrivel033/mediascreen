@@ -10,6 +10,9 @@ import requests
 import nltk
 import re
 
+# Use the provided SERP API key
+SERP_API_KEY = '450ab1c24b6bbe9302e96179ac6f299818b9d5f7e99beef44bc88fd02efc07ca'
+
 nltk.download('vader_lexicon')
 
 def perform_sentiment_analysis(summary):
