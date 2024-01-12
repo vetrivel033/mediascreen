@@ -46,25 +46,32 @@ def fetch_search_results(api_key, query, num=10):
 
         try:
             response = requests.get(url, params=params)
+            response.raise_for_status()  # Raise an exception for 4xx or 5xx responses
             results += response.json().get('organic_results', [])
-        except Exception as e:
-            st.error(f"Error accessing SERP API: {e}")
+        except requests.exceptions.HTTPError as errh:
+            st.error(f"HTTP Error: {errh}")
+        except requests.exceptions.ConnectionError as errc:
+            st.error(f"Error Connecting: {errc}")
+        except requests.exceptions.Timeout as errt:
+            st.error(f"Timeout Error: {errt}")
+        except requests.exceptions.RequestException as err:
+            st.error(f"Error: {err}")
 
     return results
 
 def generate_html_results(search_results, keywords):
     html_results = ""
     for item in search_results:
-        title = f"<b>Title:</b> {item.get('title', '')}"
-        source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
-        date = f"<b>Date:</b> {item.get('date', '')}"
-        snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
-        position = f"<b>Position:</b> {item.get('position', '')}"
-
-        config = Config()
-        article = Article(item.get('link', ''), config=config)
-
         try:
+            title = f"<b>Title:</b> {item.get('title', '')}"
+            source = f"<b>Source:</b> <a href='{item.get('link', '')}' style='color: blue; text-decoration: underline;'>{item.get('source', '')}</a>"
+            date = f"<b>Date:</b> {item.get('date', '')}"
+            snippet = f"<b>Snippet:</b> {item.get('snippet', '')}"
+            position = f"<b>Position:</b> {item.get('position', '')}"
+
+            config = Config()
+            article = Article(item.get('link', ''), config=config)
+
             article.download()
             article.parse()
             summary = article.text
@@ -92,14 +99,13 @@ def generate_html_results(search_results, keywords):
 
             # Combine all parts into HTML
             html_results += f"{title}<br>{source}<br>{date}<br>{snippet}<br>{position}<br>{formatted_summary}<br>{formatted_sentiment}<br><br>"
-
         except Exception as e:
             st.warning(f"Error processing article: {e}. Skipping to the next article.")
 
     return html_results
 
 def main():
-    st.title("Google News Analysis with Streamlit")
+    st.title("Media Screening App")
 
     # Default keywords
     default_keywords = ["Polygon", "SEC", "Compliance"]
@@ -110,7 +116,6 @@ def main():
         st.info("Analyzing news... Please wait.")
         try:
             search_results = fetch_search_results(SERP_API_KEY, ' '.join(keywords), num=10)
-            st.write(search_results)
             html_results = generate_html_results(search_results, keywords)
             st.markdown(html_results, unsafe_allow_html=True)
         except Exception as e:
