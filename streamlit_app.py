@@ -67,7 +67,7 @@ def generate_html_results(search_results, keywords):
             sentiment = perform_sentiment_analysis(summary)
 
             # Format summary into paragraphs, not exceeding 250 words
-            words_limit = 250
+            words_limit = 500
             summary_words = summary.split()
             summary_paragraphs = [f"<b>Summary:</b>"]
             current_word_count = 0
@@ -78,7 +78,6 @@ def generate_html_results(search_results, keywords):
                     current_word_count += len(word) + 1  # Add 1 for the space after the word
                 else:
                     break
-            st.write(current_word_count)
             formatted_summary = " ".join(summary_paragraphs)
             
             # Format sentiment with color
